@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.riderequest.services.RideRequestService;
+@CrossOrigin(origins = {"http://localhost:8080","https://ab2d-14-142-185-230.ngrok-free.app"},methods = {RequestMethod.DELETE,RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 @RestController
 public class RideController {
 
