@@ -3,10 +3,16 @@ package com.example.riderequest.services;
 import com.example.riderequest.Exception.RideNotFoundException;
 import com.example.riderequest.model.Ride;
 import com.example.riderequest.repository.RideRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.util.StringUtils;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class RideRequestService {
     @Autowired
@@ -30,7 +36,7 @@ public class RideRequestService {
                 .orElseThrow(() -> new RideNotFoundException(id));
     }
     public List<Ride> searchBySource( String src) {
-        List<Ride> ridesFilter  = repository.findBySource(src);
+        List<Ride> ridesFilter  = repository.findBySourceLike(src);
         if(ridesFilter.size()==0){
             throw new RideNotFoundException(src);
         }
@@ -41,7 +47,7 @@ public class RideRequestService {
 
     }
     public List<Ride> searchByName( String name) {
-        List<Ride> ridesFilter  = repository.findByName(name);
+        List<Ride> ridesFilter  = repository.findByNameLike(name);
         if(ridesFilter.size()==0){
             throw new RideNotFoundException(name);
         }
@@ -52,6 +58,42 @@ public class RideRequestService {
 
     }
 
+    public List<Ride> searchRides(Ride criteria) {
+        Specification<Ride> spec = buildSpecification(criteria);
+        return repository.findAll(spec);
+    }
+    private Specification<Ride> buildSpecification(Ride criteria) {
+        return (root, query, builder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Add predicates based on the provided search criteria
+
+            if (!StringUtils.isEmpty(criteria.getName())) {
+                predicates.add(builder.equal(root.get("name"), criteria.getName()));
+            }
+
+            if (!StringUtils.isEmpty(criteria.getSource())) {
+                predicates.add(builder.equal(root.get("source"), criteria.getSource()));
+            }
+
+            if (!StringUtils.isEmpty(criteria.getId())) {
+                predicates.add(builder.equal(root.get("id"), criteria.getId()));
+            }
+
+            if (!StringUtils.isEmpty(criteria.getStarttime())) {
+                predicates.add(builder.equal(root.get("starttime"), criteria.getStarttime()));
+            }
+            if (!StringUtils.isEmpty(criteria.getStart_date())) {
+                predicates.add(builder.equal(root.get("start_date"), criteria.getStart_date()));
+            }
+
+
+
+            return builder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+//    public List<Ride> search()
     public Ride replaceRide(Ride newRide, Long id) {
 
         return repository.findById(id)
@@ -71,23 +113,12 @@ public class RideRequestService {
                 });
     }
 
-    public void cancelRide( Long id) {
-        if(repository.findById(id)!=null) {
-            repository.deleteById(id);
-        }
-        else {
-        throw new RideNotFoundException(id);
-        }
+    @Transactional
+    public void cancelRide(List <Long> id) {
+            repository.deleteUsersWithIds(id);
         }
 
-    public void cancelRideMultiple( Long id) {
-        if(repository.findById(id)!=null) {
-            repository.deleteById(id);
-        }
-        else {
-            throw new RideNotFoundException(id);
-        }
-    }
+
     }
 
 

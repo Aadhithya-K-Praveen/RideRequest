@@ -1,5 +1,9 @@
 package com.example.riderequest.controller;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import com.example.riderequest.model.Ride;
 import com.example.riderequest.repository.RideRepository;
 import com.example.riderequest.Exception.RideNotFoundException;
@@ -19,17 +23,23 @@ public class RideController {
         return new ResponseEntity<List<Ride>>(service.getRides(),HttpStatus.OK) ;
     }
 
-    @GetMapping("/searchRide/{source}")
-    public ResponseEntity<List<Ride>> one(@PathVariable String source) {
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Ride>> searchMany(@ModelAttribute Ride criteria) {
+        List<Ride> searchList = service.searchRides(criteria);
+        if(searchList.size()==0){
+            throw new RideNotFoundException("the given data");
+        }
+        return new ResponseEntity<List<Ride>>(service.searchRides(criteria),HttpStatus.OK) ;
+    }
+
+    @GetMapping("/searchRideSource")
+    public ResponseEntity<List<Ride>> searchName(@RequestParam("source") String source) {
 
         return new ResponseEntity<List<Ride>>(service.searchBySource(source),HttpStatus.OK) ;
     }
 
-    @GetMapping("/searchRide")
-    public ResponseEntity<List<Ride>> searchName(@RequestParam("name") String name) {
 
-        return new ResponseEntity<List<Ride>>(service.searchByName(name),HttpStatus.OK) ;
-    }
 
 
     @PostMapping("/add_ride")
@@ -37,22 +47,15 @@ public class RideController {
         return new ResponseEntity<Ride>(service.addRide(newRide),HttpStatus.OK) ;
     }
 
-    // Single item
 
-    @GetMapping("/rides")
-    public ResponseEntity<Ride> one(@RequestParam("id") long id) {
-//        System.out.println(id);
-        return new ResponseEntity<Ride>(service.one(id),HttpStatus.OK) ;
-    }
-
-    @PutMapping("/editRide/{id}")
-    public ResponseEntity<Ride> replaceEmployee(@RequestBody Ride newRide, @PathVariable Long id) {
+    @PutMapping("/editRide")
+    public ResponseEntity<Ride> replaceEmployee(@RequestBody Ride newRide, @RequestParam("id") Long id) {
 
         return new ResponseEntity<Ride>(service.replaceRide(newRide,id),HttpStatus.OK) ;
     }
 
-    @DeleteMapping("/cancelRide/{id}")
-    public ResponseEntity<String> cancel(@PathVariable Long id) {
+    @DeleteMapping("/cancelRide")
+    public ResponseEntity<String> cancel(@RequestParam("id") List <Long> id) {
 
             service.cancelRide(id);
              return new ResponseEntity<String>("Cancellation Successful",HttpStatus.OK) ;

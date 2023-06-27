@@ -17,7 +17,7 @@ public class Ride {
     private Long id;
 
     private String name;
-    private String phno;
+    private String phoneno;
     private String source;
     private String destination;
     private String starttime;
@@ -25,9 +25,9 @@ public class Ride {
     private Integer passengerCount;
 
     public Ride(){}
-    public Ride(String name, String phno, String source, String destination, String starttime, String endtime,Integer passengerCount){
+    public Ride(String name, String phoneno, String source, String destination, String starttime, String endtime, Integer passengerCount){
         this.name = name;
-        this.phno = phno;
+        this.phoneno = phoneno;
         this.source = source;
         this.destination = destination;
         this.starttime = starttime;
@@ -58,7 +58,7 @@ public class Ride {
     }
 
     public void setPhoneno(String ph) {
-        this.phno = ph;
+        this.phoneno = ph;
     }
     public String getName() {
         return name;
