@@ -51,15 +51,31 @@ public class RideController {
 
     @PutMapping("/editRide")
     public ResponseEntity<Ride> replaceEmployee(@RequestBody Ride newRide, @RequestParam("id") Long id) {
-
-        return new ResponseEntity<Ride>(service.replaceRide(newRide,id),HttpStatus.OK) ;
+        if(service.one(id)!=null){
+            return new ResponseEntity<Ride>(service.replaceRide(newRide,id),HttpStatus.OK) ;
+        }
+        else{
+            throw new RideNotFoundException(id);
+        }
     }
 
-    @DeleteMapping("/cancelRide")
-    public ResponseEntity<String> cancel(@RequestParam("id") List <Long> id) {
-
+    @DeleteMapping("/cancelRides")
+    public ResponseEntity<Map<String,String>> cancel(@RequestParam("id") List <Long> id) {
+        Map<String, String> map = new HashMap<>() {{
+            put("message", "Cancellation Successful");
+        }};
             service.cancelRide(id);
-             return new ResponseEntity<String>("Cancellation Successful",HttpStatus.OK) ;
+             return new ResponseEntity<Map<String,String>>(map,HttpStatus.OK) ;
         }
+
+    @DeleteMapping("/cancelAllRides")
+    public ResponseEntity<Map<String,String>> cancelAll() {
+        Map<String, String> map = new HashMap<>() {{
+            put("message", "Ride Database cleared");
+
+        }};
+        service.cancelAllRide();
+        return new ResponseEntity<Map<String,String>>(map,HttpStatus.OK) ;
+    }
 
     }

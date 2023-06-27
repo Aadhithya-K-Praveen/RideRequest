@@ -117,6 +117,9 @@ public class RideRequestService {
     public void cancelRide(List <Long> id) {
             repository.deleteUsersWithIds(id);
         }
+        public void cancelAllRide(){
+        repository.deleteAll();
+        }
 
 
     }
