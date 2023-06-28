@@ -12,20 +12,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.riderequest.services.RideRequestService;
-@CrossOrigin(origins = {"http://localhost:8080","https://ab2d-14-142-185-230.ngrok-free.app"},methods = {RequestMethod.DELETE,RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
+@CrossOrigin(origins = "*",methods = {RequestMethod.DELETE,RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 @RestController
 public class RideController {
 
 @Autowired
     private RideRequestService service;
 
-    @GetMapping("/allrides")
+    @GetMapping("/rides")
      public ResponseEntity<List<Ride>> getRides(){
         return new ResponseEntity<List<Ride>>(service.getRides(),HttpStatus.OK) ;
     }
 
 
-    @GetMapping("/search")
+    @GetMapping("/rides/search")
     public ResponseEntity<List<Ride>> searchMany(@ModelAttribute Ride criteria) {
         List<Ride> searchList = service.searchRides(criteria);
         if(searchList.size()==0){
@@ -34,7 +34,7 @@ public class RideController {
         return new ResponseEntity<List<Ride>>(service.searchRides(criteria),HttpStatus.OK) ;
     }
 
-    @GetMapping("/searchRideSource")
+    @GetMapping("/rides/search/source")
     public ResponseEntity<List<Ride>> searchName(@RequestParam("source") String source) {
 
         return new ResponseEntity<List<Ride>>(service.searchBySource(source),HttpStatus.OK) ;
@@ -43,23 +43,33 @@ public class RideController {
 
 
 
-    @PostMapping("/add_ride")
+    @PostMapping("/rides/add")
     public ResponseEntity<Ride> newEmployee(@RequestBody Ride newRide ) {
         return new ResponseEntity<Ride>(service.addRide(newRide),HttpStatus.OK) ;
     }
 
 
-    @PutMapping("/editRide")
+    @PutMapping("/rides/edit")
     public ResponseEntity<Ride> replaceEmployee(@RequestBody Ride newRide, @RequestParam("id") Long id) {
 
         return new ResponseEntity<Ride>(service.replaceRide(newRide,id),HttpStatus.OK) ;
     }
 
-    @DeleteMapping("/cancelRide")
+    @DeleteMapping("/rides/cancel")
     public ResponseEntity<String> cancel(@RequestParam("id") List <Long> id) {
+            if(service.Many(id).size()!=0){
+                service.cancelRide(id);
+                return new ResponseEntity<String>("Cancellation Successful",HttpStatus.OK) ;
+            }
+        return new ResponseEntity<String>("Cannot Find",HttpStatus.OK) ;
 
-            service.cancelRide(id);
-             return new ResponseEntity<String>("Cancellation Successful",HttpStatus.OK) ;
-        }
+    }
+
+    @DeleteMapping("/rides/cancelAll")
+    public ResponseEntity<String> cancelAll(@RequestParam("id") List <Long> id) {
+        service.cancelRide();
+        return new ResponseEntity<String>("Database Cleared",HttpStatus.OK) ;
+
+    }
 
     }

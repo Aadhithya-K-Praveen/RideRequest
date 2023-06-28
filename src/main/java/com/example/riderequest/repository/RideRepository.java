@@ -14,6 +14,7 @@ public interface RideRepository extends JpaRepository<Ride, Long> {
     List<Ride> findByNameLike(String name);
 
     List<Ride> findAll(Specification<Ride> spec);
+    List<Ride> findAllByIdIn(List <Long> id);
 
     @Modifying
     @Query("delete from Ride u where u.id in ?1")

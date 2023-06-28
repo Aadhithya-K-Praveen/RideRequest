@@ -11,7 +11,6 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class RideRequestService {
@@ -25,6 +24,7 @@ public class RideRequestService {
         return repository.findAll();
     }
     public Ride addRide(Ride newEmployee) {
+
         return repository.save(newEmployee);
     }
 
@@ -34,6 +34,11 @@ public class RideRequestService {
 
         return repository.findById(id)
                 .orElseThrow(() -> new RideNotFoundException(id));
+    }
+    public List<Ride> Many( List<Long> id) {
+
+        return repository.findAllByIdIn(id);
+
     }
     public List<Ride> searchBySource( String src) {
         List<Ride> ridesFilter  = repository.findBySourceLike(src);
@@ -80,11 +85,11 @@ public class RideRequestService {
                 predicates.add(builder.equal(root.get("id"), criteria.getId()));
             }
 
-            if (!StringUtils.isEmpty(criteria.getStarttime())) {
-                predicates.add(builder.equal(root.get("starttime"), criteria.getStarttime()));
+            if (!StringUtils.isEmpty(criteria.getTime())) {
+                predicates.add(builder.equal(root.get("starttime"), criteria.getTime()));
             }
-            if (!StringUtils.isEmpty(criteria.getStart_date())) {
-                predicates.add(builder.equal(root.get("start_date"), criteria.getStart_date()));
+            if (!StringUtils.isEmpty(criteria.getDate())) {
+                predicates.add(builder.equal(root.get("start_date"), criteria.getDate()));
             }
 
 
@@ -102,8 +107,8 @@ public class RideRequestService {
                     ride.setDestination(newRide.getDestination());
                     ride.setSource(newRide.getSource());
                     ride.setPhoneno(newRide.getPhoneno());
-                    ride.setStart_date(newRide.getStart_date());
-                    ride.setStarttime(newRide.getStarttime());
+                    ride.setDate(newRide.getDate());
+                    ride.setTime(newRide.getTime());
                     ride.setPassengerCount(newRide.getPassengerCount());
                     return repository.save(ride);
                 })
@@ -115,8 +120,11 @@ public class RideRequestService {
 
     @Transactional
     public void cancelRide(List <Long> id) {
-            repository.deleteUsersWithIds(id);
-        }
+        repository.deleteUsersWithIds(id);
+    }
+    public void cancelRide() {
+        repository.deleteAll();
+    }
 
 
     }
