@@ -1,6 +1,7 @@
 package com.example.riderequest.services;
 
 import com.example.riderequest.Exception.RideNotFoundException;
+import com.example.riderequest.model.Customer;
 import com.example.riderequest.model.Ride;
 import com.example.riderequest.repository.RideRepository;
 import jakarta.transaction.Transactional;
@@ -11,31 +12,43 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class RideRequestService {
     @Autowired
     private RideRepository repository;
+    @Autowired
+    private RideHistoryRepository history;
     RideRequestService(RideRepository repository) {
         this.repository = repository;
+        this.history = history;
     }
-    public List<Ride> getRides(){
+    public List<Ride> getRidesService(){
 
         return repository.findAll();
     }
-    public Ride addRide(Ride newEmployee) {
+    public Ride addRideService(Ride newEmployee) {
+        Customer ride = new Customer();
+        ride.setPassengerCount(newEmployee.getPassengerCount());
+        ride.setDestination(newEmployee.getDestination());
+        ride.setName(newEmployee.getName());
+        ride.setPhoneno(newEmployee.getPhoneno());
+        ride.setStart_date(newEmployee.getStart_date());
+        ride.setSource(newEmployee.getSource());
+        ride.setId(newEmployee.getId());
+        history.save(ride);
         return repository.save(newEmployee);
+
     }
 
     // Single item
 
-    public Ride one( Long id) {
+    public Ride findOneService(Long id) {
 
         return repository.findById(id)
                 .orElseThrow(() -> new RideNotFoundException(id));
     }
-    public List<Ride> searchBySource( String src) {
+    public List<Ride> searchBySourceService(String src) {
         List<Ride> ridesFilter  = repository.findBySourceLike(src);
         if(ridesFilter.size()==0){
             throw new RideNotFoundException(src);
@@ -58,7 +71,7 @@ public class RideRequestService {
 
     }
 
-    public List<Ride> searchRides(Ride criteria) {
+    public List<Ride> searchRidesService(Ride criteria) {
         Specification<Ride> spec = buildSpecification(criteria);
         return repository.findAll(spec);
     }
@@ -93,8 +106,8 @@ public class RideRequestService {
         };
     }
 
-//    public List<Ride> search()
-    public Ride replaceRide(Ride newRide, Long id) {
+
+    public Ride replaceRideService(Ride newRide, Long id) {
 
         return repository.findById(id)
                 .map(ride -> {
@@ -114,10 +127,10 @@ public class RideRequestService {
     }
 
     @Transactional
-    public void cancelRide(List <Long> id) {
+    public void cancelRideService(List <Long> id) {
             repository.deleteUsersWithIds(id);
         }
-        public void cancelAllRide(){
+        public void cancelAllRideService(){
         repository.deleteAll();
         }
 

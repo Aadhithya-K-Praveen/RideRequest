@@ -8,92 +8,79 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
 
+import java.sql.Time;
+
 
 @Entity
 @Table(name = "rides")
 public class Ride {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long rideid;
 
-    private String name;
+    private String drivername;
     private String phoneno;
-    private String source;
-    private String destination;
-    private String starttime;
-    private String start_date;
-    private Integer passengerCount;
+    private String currlocation;
+    private Integer InRide;
+    private Integer maxcount;
+
+
 
     public Ride(){}
-    public Ride(String name, String phoneno, String source, String destination, String starttime, String endtime, Integer passengerCount){
-        this.name = name;
+    public Ride(String name, String phoneno, String currlocation, Integer inRide, Integer maxcount){
+        this.drivername = name;
         this.phoneno = phoneno;
-        this.source = source;
-        this.destination = destination;
-        this.starttime = starttime;
-        this.start_date = endtime;
-        this.passengerCount = passengerCount;
+        this.InRide = inRide;
+        this.currlocation = currlocation;
+        this.maxcount = maxcount;
     }
 
 
-    public Long getId() {
-        return id;
+    public Long getRideid() {
+        return rideid;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setRideid(Long id) {
+        this.rideid = id;
     }
 
-    public Integer getPassengerCount() {
-        return passengerCount;
+    public Integer getMaxcount() {
+        return maxcount;
     }
 
-    public void setPassengerCount(Integer count) {
-        this.passengerCount = count;
+    public void setMaxcount(Integer count) {
+        this.maxcount = count;
     }
 
 
     public String getPhoneno() {
-        return name;
+        return phoneno;
     }
 
     public void setPhoneno(String ph) {
         this.phoneno = ph;
     }
-    public String getName() {
-        return name;
+    public String getDrivername() {
+        return drivername;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getSource() {
-        return source;
+    public void setDrivername(String name) {
+        this.drivername = name;
     }
 
-    public void setSource(String src) {
-        this.source = src;
+
+    public void setInRide(Integer inRide) {
+        this.InRide = inRide;
     }
-    public String getDestination() {
-        return destination;
+    public Integer getInRide() {
+        return InRide;
     }
 
-    public void setDestination(String dest) {
-        this.destination = dest;
+    public void setmaxcount(Integer maxcount) {
+        this.maxcount = maxcount;
     }
-    public String getStarttime() {
-        return starttime;
-    }
-
-    public void setStarttime(String name) {
-        this.starttime = name;
-    }
-    public String getStart_date() {
-        return start_date;
-    }
-
-    public void setStart_date(String name) {
-        this.start_date = name;
+    public Integer getmaxcount() {
+        return maxcount;
     }
 
 }
