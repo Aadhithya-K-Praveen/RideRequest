@@ -1,9 +1,17 @@
 package com.example.riderequest.model;
 
-
+import lombok.AllArgsConstructor;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "customer")
 public class Customer {
@@ -13,46 +21,7 @@ public class Customer {
 
     private String customername;
     private String customerphno;
-    private Integer rating;
-
-
-
-    public Customer(){}
-
-
-    public Long getId() {
-        return customerId;
-    }
-
-    public void setId(Long id) {
-        this.customerId = id;
-    }
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer count) {
-        this.rating = count;
-    }
-
-
-
-    public String getPhoneno() {
-        return customerphno;
-    }
-
-    public void setPhoneno(String ph) {
-        this.customerphno = ph;
-    }
-    public String getName() {
-        return customername;
-    }
-
-    public void setName(String name) {
-        this.customername = name;
-    }
-
-
+    private String password;
 
 
 }

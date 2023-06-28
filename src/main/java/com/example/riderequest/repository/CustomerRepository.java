@@ -1,6 +1,6 @@
 package com.example.riderequest.repository;
+import com.example.riderequest.model.Customer;
 
-import com.example.riderequest.model.Ride;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -8,14 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface CustomerRepository extends JpaRepository<Ride, Long> {
-    List<Ride> findBySourceLike(String source);
-    List<Ride> findByNameLike(String name);
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
-    List<Ride> findAll(Specification<Ride> spec);
+    List<Customer> findBycustomernameLike(String name);
+    Customer findByCustomerId(Long id);
+    Customer findByCustomerphno(String customerphno);
+    void deleteAllByCustomerIdIn(List <Long> id);
 
-    @Modifying
-    @Query("delete from Ride u where u.customer in ?1")
-    void deleteUsersWithIds(List<Long> ids);
 }
 

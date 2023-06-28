@@ -17,39 +17,39 @@ public class RideController {
 @Autowired
     private RideRequestService service;
 
-    @GetMapping("/allrides")
-     public ResponseEntity<List<Ride>> getRides(){
-        return new ResponseEntity<List<Ride>>(service.getRidesService(),HttpStatus.OK) ;
+    @GetMapping("/{customerid}/allrides")
+     public ResponseEntity<List<Ride>> getRides(@PathVariable("customerid") Long customerid){
+        return new ResponseEntity<List<Ride>>(service.getRidesService(customerid),HttpStatus.OK) ;
     }
 
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Ride>> searchMany(@ModelAttribute Ride criteria) {
-        List<Ride> searchList = service.searchRidesService(criteria);
+    @GetMapping("/{customerid}/rides/search")
+    public ResponseEntity<List<Ride>> searchMany(@PathVariable("customerid") Long customerid,@ModelAttribute Ride criteria) {
+        List<Ride> searchList = service.searchRidesService(customerid,criteria);
         if(searchList.size()==0){
             throw new RideNotFoundException("the given data");
         }
-        return new ResponseEntity<List<Ride>>(service.searchRidesService(criteria),HttpStatus.OK) ;
+        return new ResponseEntity<List<Ride>>(service.searchRidesService(customerid,criteria),HttpStatus.OK) ;
     }
 
-    @GetMapping("/searchRideSource")
-    public ResponseEntity<List<Ride>> searchName(@RequestParam("source") String source) {
+    @GetMapping("/rides/search/source")
+    public ResponseEntity<List<Ride>> searchName(@PathVariable("customerid") Long customerid,@RequestParam("source") String source) {
 
-        return new ResponseEntity<List<Ride>>(service.searchBySourceService(source),HttpStatus.OK) ;
-    }
-
-
-
-
-    @PostMapping("/add_ride")
-    public ResponseEntity<Ride> newEmployee(@RequestBody Ride newRide ) {
-        return new ResponseEntity<Ride>(service.addRideService(newRide),HttpStatus.OK) ;
+        return new ResponseEntity<List<Ride>>(service.searchBySourceService(customerid,source),HttpStatus.OK) ;
     }
 
 
-    @PutMapping("/editRide")
-    public ResponseEntity<Ride> replaceEmployee(@RequestBody Ride newRide, @RequestParam("id") Long id) {
-        if(service.findOneService(id)!=null){
+
+
+    @PostMapping("/{customerid}/rides/add")
+    public ResponseEntity<Ride> newEmployee(@PathVariable("customerid") Long customerid,@RequestBody Ride newRide ) {
+        return new ResponseEntity<Ride>(service.addRideService(customerid,newRide),HttpStatus.OK) ;
+    }
+
+
+    @PutMapping("/{customerid}/rides/edit")
+    public ResponseEntity<Ride> replaceEmployee(@PathVariable("customerid") Long customerid,@RequestBody Ride newRide, @RequestParam("id") Long id) {
+        if(service.findOneService(customerid,id)!=null){
             return new ResponseEntity<Ride>(service.replaceRideService(newRide,id),HttpStatus.OK) ;
         }
         else{
@@ -57,22 +57,22 @@ public class RideController {
         }
     }
 
-    @DeleteMapping("/cancelRides")
-    public ResponseEntity<Map<String,String>> cancel(@RequestParam("id") List <Long> id) {
+    @DeleteMapping("/{customerid}/rides/cancel")
+    public ResponseEntity<Map<String,String>> cancel(@PathVariable("customerid") Long customerid,@RequestParam("id") List <Long> id) {
         Map<String, String> map = new HashMap<>() {{
             put("message", "Cancellation Successful");
         }};
-            service.cancelRideService(id);
+            service.cancelRideService(customerid,id);
              return new ResponseEntity<Map<String,String>>(map,HttpStatus.OK) ;
         }
 
-    @DeleteMapping("/cancelAllRides")
-    public ResponseEntity<Map<String,String>> cancelAll() {
+    @DeleteMapping("/{customerid}/rides/cancelAll")
+    public ResponseEntity<Map<String,String>> cancelAll(@PathVariable("customerid") Long customerid) {
         Map<String, String> map = new HashMap<>() {{
             put("message", "Ride Database cleared");
 
         }};
-        service.cancelAllRideService();
+        service.cancelAllRideService(customerid);
         return new ResponseEntity<Map<String,String>>(map,HttpStatus.OK) ;
     }
 
