@@ -73,7 +73,7 @@ public class RideController {
     }
 
     @DeleteMapping("/rides/cancelAll")
-    public ResponseEntity<String> cancelAll(@RequestParam("id") List <Long> id) {
+    public ResponseEntity<String> cancelAll() {
         service.cancelRide();
         return new ResponseEntity<String>("Database Cleared",HttpStatus.OK) ;
 
