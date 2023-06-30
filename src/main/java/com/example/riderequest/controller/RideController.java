@@ -43,7 +43,7 @@ public class RideController {
 
 
 
-    @PostMapping("/rides/add")
+    @PostMapping("/rides/request")
     public ResponseEntity<Ride> newEmployee(@RequestBody Ride newRide ) {
         return new ResponseEntity<Ride>(service.addRide(newRide),HttpStatus.OK) ;
     }
