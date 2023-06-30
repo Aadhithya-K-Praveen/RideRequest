@@ -41,7 +41,7 @@ public class RideRequestService {
 
     }
     public List<Ride> searchBySource( String src) {
-        List<Ride> ridesFilter  = repository.findBySourceLike(src);
+        List<Ride> ridesFilter  = repository.findBySourceLikeIgnoreCase(src);
         if(ridesFilter.size()==0){
             throw new RideNotFoundException(src);
         }
@@ -52,7 +52,7 @@ public class RideRequestService {
 
     }
     public List<Ride> searchByName( String name) {
-        List<Ride> ridesFilter  = repository.findByNameLike(name);
+        List<Ride> ridesFilter  = repository.findByNameLikeIgnoreCase(name);
         if(ridesFilter.size()==0){
             throw new RideNotFoundException(name);
         }
@@ -74,11 +74,11 @@ public class RideRequestService {
             // Add predicates based on the provided search criteria
 
             if (!StringUtils.isEmpty(criteria.getName())) {
-                predicates.add(builder.equal(root.get("name"), criteria.getName()));
+                predicates.add(builder.equal(builder.lower(root.get("name")), criteria.getName().toLowerCase()));
             }
 
             if (!StringUtils.isEmpty(criteria.getSource())) {
-                predicates.add(builder.equal(root.get("source"), criteria.getSource()));
+                predicates.add(builder.equal(builder.lower(root.get("source")), criteria.getSource().toLowerCase()));
             }
 
             if (!StringUtils.isEmpty(criteria.getId())) {
@@ -86,10 +86,10 @@ public class RideRequestService {
             }
 
             if (!StringUtils.isEmpty(criteria.getTime())) {
-                predicates.add(builder.equal(root.get("starttime"), criteria.getTime()));
+                predicates.add(builder.equal(builder.lower(root.get("starttime")), criteria.getTime().toLowerCase()));
             }
             if (!StringUtils.isEmpty(criteria.getDate())) {
-                predicates.add(builder.equal(root.get("start_date"), criteria.getDate()));
+                predicates.add(builder.equal(builder.lower(root.get("start_date")), criteria.getDate().toLowerCase()));
             }
 
 
