@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.riderequest.model.Ride;
-import com.example.riderequest.Exception.RideNotFoundException;
+import com.example.riderequest.Exception.ExceptionHandlerController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,21 +18,26 @@ public class RideController {
     private RideRequestService service;
 
     @GetMapping("/{customerid}/allrides")
-     public ResponseEntity<List<Ride>> getRides(@PathVariable("customerid") Long customerid){
-        return new ResponseEntity<List<Ride>>(service.getRidesService(customerid),HttpStatus.OK) ;
+    public ResponseEntity<List<Ride>> getRides(@PathVariable("customerid") Long customerid) {
+        try {
+            List<Ride> rides = service.getRidesService(customerid);
+            return ResponseEntity.ok(rides);
+        } catch (Exception e) {
+            // Handle the exception and return an error response
+            String errorMessage = "An error occurred: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 
     @GetMapping("/{customerid}/rides/search")
     public ResponseEntity<List<Ride>> searchMany(@PathVariable("customerid") Long customerid,@ModelAttribute Ride criteria) {
-        List<Ride> searchList = service.searchRidesService(customerid,criteria);
-        if(searchList.size()==0){
-            throw new RideNotFoundException("the given data");
-        }
+//        List<Ride> searchList = service.searchRidesService(customerid,criteria);
+
         return new ResponseEntity<List<Ride>>(service.searchRidesService(customerid,criteria),HttpStatus.OK) ;
     }
 
-    @GetMapping("/rides/search/source")
+    @GetMapping("/{customerid}/rides/search/source")
     public ResponseEntity<List<Ride>> searchName(@PathVariable("customerid") Long customerid,@RequestParam("source") String source) {
 
         return new ResponseEntity<List<Ride>>(service.searchBySourceService(customerid,source),HttpStatus.OK) ;
@@ -49,12 +54,12 @@ public class RideController {
 
     @PutMapping("/{customerid}/rides/edit")
     public ResponseEntity<Ride> replaceEmployee(@PathVariable("customerid") Long customerid,@RequestBody Ride newRide, @RequestParam("id") Long id) {
-        if(service.findOneService(customerid,id)!=null){
+//        if(service.findOneService(customerid,id)!=null){
             return new ResponseEntity<Ride>(service.replaceRideService(newRide,id),HttpStatus.OK) ;
-        }
-        else{
-            throw new RideNotFoundException(id);
-        }
+//        }
+//        else{
+//            throw new ExceptionHandlerController(id);
+//        }
     }
 
     @DeleteMapping("/{customerid}/rides/cancel")

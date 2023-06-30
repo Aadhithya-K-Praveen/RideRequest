@@ -1,8 +1,6 @@
 package com.example.riderequest.services;
 import com.example.riderequest.model.Ride;
 
-import com.example.riderequest.Exception.RideNotFoundException;
-import com.example.riderequest.model.Customer;
 import com.example.riderequest.repository.RideRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,20 +33,12 @@ public class RideRequestService {
 
     public Ride findOneService(Long customerid,Long id) {
 
-        return repository.findByRideidAndCustomerid(customerid,id)
-                .orElseThrow(id);
+        return repository.findByRideidAndCustomerid(customerid,id);
+//                .orElseThrow(id);
     }
 
     public List<Ride> searchBySourceService(Long customerid,String src) {
-        List<Ride> ridesFilter  = repository.findBySourceLike(src);
-        if(ridesFilter.size()==0){
-            throw new RideNotFoundException(src);
-        }
-        else {
-            return ridesFilter;
-        }
-
-
+        return repository.findBySourceLike(src);
     }
 
 
@@ -77,8 +67,8 @@ public class RideRequestService {
             if (!StringUtils.isEmpty(criteria.getDestination())) {
                 predicates.add(builder.equal(root.get("destination"), criteria.getDestination()));
             }
-            if (!StringUtils.isEmpty(criteria.getStart_date())) {
-                predicates.add(builder.equal(root.get("start_date"), criteria.getStart_date()));
+            if (!StringUtils.isEmpty(criteria.getDate())) {
+                predicates.add(builder.equal(root.get("start_date"), criteria.getDate()));
             }
 
 
@@ -96,8 +86,8 @@ public class RideRequestService {
             existingRide.setCustomerid(newRide.getCustomerid());
             existingRide.setSource(newRide.getSource());
             existingRide.setDestination(newRide.getDestination());
-            existingRide.setStartTime(newRide.getStartTime());
-            existingRide.setStart_date(newRide.getStart_date());
+            existingRide.setTime(newRide.getTime());
+            existingRide.setDate(newRide.getDate());
             existingRide.setPassengerCount(newRide.getPassengerCount());
             existingRide.setStatus(newRide.getStatus());
 

@@ -19,23 +19,40 @@ public class CustomerService {
     CustomerService(CustomerRepository repository) {
         this.repository = repository;
     }
-    public List<Customer> getCustomerService(Long id){
+    public List<Customer> getCustomerService(){
 
         return repository.findAll();
     }
     public Customer addCustomerService(Customer newCustomer) {
-        String sha256hex = sha256()
-                .hashString(newCustomer.getPassword(), StandardCharsets.UTF_8)
-                .toString();
-        newCustomer.setPassword(sha256hex);
-//        if(repository.findByCustomerphno(newCustomer.getCustomerphno())!=null){
+
+        newCustomer.setPassword(hashPass(newCustomer.getPassword()));
+        if(repository.findByCustomerphno(newCustomer.getCustomerphno())==null){
             return repository.save(newCustomer);
 
-//        }
-//        else {
-//        return null;
-//        }
+        }
+        else {
+        return null;
+        }
 
+    }
+    public String hashPass(String pass){
+        String sha256hex = sha256()
+                .hashString(pass, StandardCharsets.UTF_8)
+                .toString();
+        return sha256hex;
+    }
+
+    public Customer checkCustomerService(String phno, String pass){
+        Customer currentCustomer = repository.findByCustomerphno(phno);
+        if(currentCustomer!=null){
+            if( currentCustomer.getPassword()==hashPass(pass)){
+                return currentCustomer;
+            }
+            else{
+                return null;
+            }
+        }
+        return null;
     }
 
     // Single item
@@ -49,7 +66,7 @@ public class CustomerService {
         String sha256hex = sha256()
                 .hashString(newCustomer.getPassword(), StandardCharsets.UTF_8)
                 .toString();
-        newCustomer.setPassword(sha256hex);
+        newCustomer.setPassword(hashPass(newCustomer.getPassword()));
         return repository.findById(id)
                 .map(Customer -> {
                     Customer.setCustomername(newCustomer.getCustomername());

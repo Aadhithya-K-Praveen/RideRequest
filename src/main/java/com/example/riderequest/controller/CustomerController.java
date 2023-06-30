@@ -1,6 +1,6 @@
 package com.example.riderequest.controller;
 
-import com.example.riderequest.Exception.RideNotFoundException;
+import com.example.riderequest.Exception.ExceptionHandlerController;
 import com.example.riderequest.model.Customer;
 import com.example.riderequest.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,28 +20,32 @@ public class CustomerController {
     private CustomerService service;
 
     @GetMapping("/allCustomer")
-     public ResponseEntity<List<Customer>> getRides(@PathVariable("customerid") Long customerid){
-        return new ResponseEntity<List<Customer>>(service.getCustomerService(customerid),HttpStatus.OK) ;
+     public ResponseEntity<List<Customer>> getRides(){
+        return new ResponseEntity<List<Customer>>(service.getCustomerService(),HttpStatus.OK) ;
     }
-    
 
+    @PostMapping("/customer/login")
+    public ResponseEntity<Customer> checkCustomer(@RequestBody String phno, @RequestBody String pass ) {
+
+        return new ResponseEntity<Customer>(service.checkCustomerService(phno,pass),HttpStatus.OK) ;
+    }
 
 
     @PostMapping("/customer/signup")
-    public ResponseEntity<Customer> newEmployee(@RequestBody Customer newCustomer ) {
+    public ResponseEntity<Customer> newCustomer(@RequestBody Customer newCustomer ) {
 
         return new ResponseEntity<Customer>(service.addCustomerService(newCustomer),HttpStatus.OK) ;
     }
 
 
     @PutMapping("/customer/edit")
-    public ResponseEntity<Customer> replaceEmployee(@RequestBody Customer newRide, @RequestParam("id") Long id) {
-        if(service.getCustomerService(id)!=null){
+    public ResponseEntity<Customer> replaceCustomer(@RequestBody Customer newRide, @RequestParam("id") Long id) {
+//        if(service.findCustomer(id)!=null){
             return new ResponseEntity<Customer>(service.editCustomerService(newRide,id),HttpStatus.OK) ;
-        }
-        else{
-            throw new RideNotFoundException(id);
-        }
+//        }
+//        else{
+//            throw new ExceptionHandlerController(id);
+//        }
     }
 
     @DeleteMapping("/customer/delete")
