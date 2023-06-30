@@ -85,11 +85,14 @@ public class RideRequestService {
             // Add predicates based on the provided search criteria
 
             if (!StringUtils.isEmpty(criteria.getName())) {
-                predicates.add(builder.equal(builder.lower(root.get("name")), criteria.getName().toLowerCase()));
+                predicates.add(builder.like(builder.lower(root.get("name")), criteria.getName().toLowerCase()));
             }
 
             if (!StringUtils.isEmpty(criteria.getSource())) {
-                predicates.add(builder.equal(builder.lower(root.get("source")), criteria.getSource().toLowerCase()));
+                predicates.add(builder.like(builder.lower(root.get("source")), criteria.getSource().toLowerCase()));
+            }
+            if (!StringUtils.isEmpty(criteria.getDestination())) {
+                predicates.add(builder.like(builder.lower(root.get("destination")), criteria.getDestination().toLowerCase()));
             }
 
             if (!StringUtils.isEmpty(criteria.getId())) {
@@ -97,15 +100,15 @@ public class RideRequestService {
             }
 
             if (!StringUtils.isEmpty(criteria.getTime())) {
-                predicates.add(builder.equal(builder.lower(root.get("starttime")), criteria.getTime().toLowerCase()));
+                predicates.add(builder.like(builder.lower(root.get("starttime")), criteria.getTime().toLowerCase()));
             }
             if (!StringUtils.isEmpty(criteria.getDate())) {
-                predicates.add(builder.equal(builder.lower(root.get("start_date")), criteria.getDate().toLowerCase()));
+                predicates.add(builder.like(builder.lower(root.get("start_date")), criteria.getDate().toLowerCase()));
             }
 
 
 
-            return builder.and(predicates.toArray(new Predicate[0]));
+            return builder.or(predicates.toArray(new Predicate[0]));
         };
     }
 
@@ -123,10 +126,7 @@ public class RideRequestService {
                     ride.setPassengerCount(newRide.getPassengerCount());
                     return repository.save(ride);
                 })
-                .orElseGet(() -> {
-                    newRide.setId(id);
-                    return repository.save(newRide);
-                });
+                .orElseThrow(() -> new RideNotFoundException(id));
     }
 
     @Transactional
