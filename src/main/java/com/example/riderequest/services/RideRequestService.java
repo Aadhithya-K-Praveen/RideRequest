@@ -1,5 +1,4 @@
 package com.example.riderequest.services;
-
 import com.example.riderequest.Exception.RideNotFoundException;
 import com.example.riderequest.model.Ride;
 import com.example.riderequest.repository.RideRepository;
@@ -11,11 +10,22 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
+import org.jooq.DSLContext;
+//import com.example.riderequest.services.jooq.sample.model.tables.pojos.Book;
 
 @Service
 public class RideRequestService {
+//    @Autowired
+//    DSLContext context;
+//    public List<Ride> getBooks(){
+//        return context
+//                .selectFrom(Tables.BOOK)
+//                .fetchInto(Book.class);
+//    }
+
+
     @Autowired
-    private RideRepository repository;
+            private RideRepository repository;
     RideRequestService(RideRepository repository) {
         this.repository = repository;
     }
@@ -27,6 +37,7 @@ public class RideRequestService {
 
         return repository.save(newEmployee);
     }
+
 
     // Single item
 

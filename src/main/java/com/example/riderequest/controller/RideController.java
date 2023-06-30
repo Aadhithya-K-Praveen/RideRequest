@@ -19,6 +19,12 @@ public class RideController {
 @Autowired
     private RideRequestService service;
 
+    @GetMapping("/")
+    public ResponseEntity<Map> checkConnection(){
+
+        return new ResponseEntity<>( Map.of("message", "Connection Successful"), HttpStatus.OK) ;
+    }
+
     @GetMapping("/rides")
      public ResponseEntity<List<Ride>> getRides(){
         return new ResponseEntity<List<Ride>>(service.getRides(),HttpStatus.OK) ;
@@ -43,9 +49,17 @@ public class RideController {
 
 
 
-    @PostMapping("/rides/add")
-    public ResponseEntity<Ride> newEmployee(@RequestBody Ride newRide ) {
-        return new ResponseEntity<Ride>(service.addRide(newRide),HttpStatus.OK) ;
+    @PostMapping("/rides/request")
+    public ResponseEntity<Map> newEmployee(@RequestBody Ride newRide ) {
+        if(service.addRide(newRide)!=null){
+            return new ResponseEntity<>( Map.of("message", "Request successful"), HttpStatus.OK) ;
+        }
+        else {
+            return new ResponseEntity<>( Map.of("message", "Request Failed"), HttpStatus.BAD_REQUEST) ;
+
+        }
+
+
     }
 
 
