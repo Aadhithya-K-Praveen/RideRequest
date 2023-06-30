@@ -19,6 +19,13 @@ public class RideController {
 @Autowired
     private RideRequestService service;
 
+    @GetMapping("/")
+    public ResponseEntity<Map> checkConnection(){
+
+        return new ResponseEntity<>( Map.of("message", "Connection Successful"), HttpStatus.OK) ;
+    }
+
+
     @GetMapping("/rides")
      public ResponseEntity<List<Ride>> getRides(){
         return new ResponseEntity<List<Ride>>(service.getRides(),HttpStatus.OK) ;
